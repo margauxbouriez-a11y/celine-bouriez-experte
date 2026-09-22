@@ -357,10 +357,63 @@
 </main>
 
 <footer>
-  <div class="wrap footer-row">
-    <span>Céline Bouriez — Experte réglementaire indépendante</span>
-    <span>contact@celinebouriez-regulatory.fr</span>
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Contact</div>
+      <h2>Envoyer un message</h2>
+      <p>Une question, un projet&nbsp;? Écrivez-moi, je vous réponds rapidement.</p>
+    </div>
+
+    <form id="contact-form" class="quest-box" style="text-align:left; max-width:520px;">
+      <label style="display:block; margin-bottom:14px;">
+        <span style="display:block; font-size:0.8rem; color:var(--ink-soft); margin-bottom:6px;">Nom</span>
+        <input name="name" required
+          style="width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:4px; background:var(--bg); color:var(--ink); font-family:inherit; font-size:0.9rem;">
+      </label>
+
+      <label style="display:block; margin-bottom:14px;">
+        <span style="display:block; font-size:0.8rem; color:var(--ink-soft); margin-bottom:6px;">Email</span>
+        <input name="email" type="email" required
+          style="width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:4px; background:var(--bg); color:var(--ink); font-family:inherit; font-size:0.9rem;">
+      </label>
+
+      <label style="display:block; margin-bottom:18px;">
+        <span style="display:block; font-size:0.8rem; color:var(--ink-soft); margin-bottom:6px;">Message</span>
+        <textarea name="message" rows="5" required
+          style="width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:4px; background:var(--bg); color:var(--ink); font-family:inherit; font-size:0.9rem; resize:vertical;"></textarea>
+      </label>
+
+      <button type="submit" class="btn">Envoyer</button>
+      <p id="contact-status" style="margin-top:14px; font-size:0.85rem; color:var(--ink-soft);"></p>
+    </form>
   </div>
+</section>
+
+<script>
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('contact-status');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = 'Envoi en cours…';
+    try {
+      const res = await fetch('https://margauxbouriez.app.n8n.cloud/webhook/contact-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name.value,
+          email: form.email.value,
+          message: form.message.value
+        })
+      });
+      if (!res.ok) throw new Error();
+      form.reset();
+      status.textContent = 'Merci ! Votre message a bien été envoyé.';
+    } catch (err) {
+      status.textContent = "Une erreur est survenue. Merci de réessayer.";
+    }
+  });
+</script>
 </footer>
 
 </body>
